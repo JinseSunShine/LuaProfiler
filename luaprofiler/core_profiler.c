@@ -81,8 +81,7 @@ static void formats(char *s) {
 }
 
 /*
-	将lua api的操作记录剔除
-	2016-08-10 lennon.c
+    筛除lua api 记录
 */
 int filter_lua_api(char* func_name)
 {
@@ -100,26 +99,24 @@ int filter_lua_api(char* func_name)
 
 		p++;
 	}
-
 	return 0;
 }
 
 /* computes new stack and new timer */
 void lprofP_callhookIN(lprofP_STATE* S, char *func_name, char *file, int linedefined, int currentline,char* what) 
 {
-  // 过滤lua api操作 2016-08-10 lennon.c
-  if (func_name && filter_lua_api(func_name))
-	return;
-  S->stack_level++;
-  lprofM_enter_function(S, file, func_name, linedefined, currentline,what);
-  
+    // 过滤lua api操作
+    if (func_name && filter_lua_api(func_name))
+	    return;
+    S->stack_level++;
+    lprofM_enter_function(S, file, func_name, linedefined, currentline,what);
 }
 
 
 /* pauses all timers to write a log line and computes the new stack */
 /* returns if there is another function in the stack */
 int lprofP_callhookOUT(lprofP_STATE* S) {
-	// 过滤lua api操作 2016-08-10 lennon.c
+	// 过滤lua api操作
 	if (!S->stack_top)
 		return 0;
 

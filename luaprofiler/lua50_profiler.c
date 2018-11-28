@@ -10,7 +10,6 @@ lua50_profiler.c:
 *****************************************************************************/
 /*
 	解决跨平台编译时宏控制import/export的问题 lennon.c
-	2016-08-11 lennon.c
 */ 
 #define LUA_CORE
 
@@ -22,9 +21,9 @@ lua50_profiler.c:
 #include "core_profiler.h"
 #include "function_meter.h"
 
-#include "../lua.h"
-#include "../lauxlib.h"
-#include "luaprofiler.h"
+#include "lua.h"
+#include "lauxlib.h"
+//#include "luaprofiler.h"
 
 /* Indices for the main profiler stack and for the original exit function */
 static int exit_id;
@@ -38,35 +37,34 @@ static int profiler_stop(lua_State *L);
 
 /* called by Lua (via the callhook mechanism) */
 static void callhook(lua_State *L, lua_Debug *ar) {
-  int currentline;
-  lua_Debug previous_ar;
-  lprofP_STATE* S;
-  lua_pushlightuserdata(L, &profstate_id);
-  lua_gettable(L, LUA_REGISTRYINDEX);
-  S = (lprofP_STATE*)lua_touserdata(L, -1);
+    int currentline;
+    lua_Debug previous_ar;
+    lprofP_STATE* S;
+    lua_pushlightuserdata(L, &profstate_id);
+    lua_gettable(L, LUA_REGISTRYINDEX);
+    S = (lprofP_STATE*)lua_touserdata(L, -1);
 
-  if (lua_getstack(L, 1, &previous_ar) == 0) {
-    currentline = -1;
-  } else {
-    lua_getinfo(L, "l", &previous_ar);
-    currentline = previous_ar.currentline;
-  }
+    if (lua_getstack(L, 1, &previous_ar) == 0) {
+        currentline = -1;
+    } else {
+        lua_getinfo(L, "l", &previous_ar);
+        currentline = previous_ar.currentline;
+    }
       
-  lua_getinfo(L, "nS", ar);
+    lua_getinfo(L, "nS", ar);
 
-  int stackIndex = lua_gettop(L);
-
-  printf("stacklevel = %d", S->stack_level);
+    //int stackIndex = lua_gettop(L);
+    //printf("stacklevel, stackindex = %d, %d", S->stack_level, stackindex);
 
 	if (!ar->event) {
-		  /* entering a function */
-		  lprofP_callhookIN(S, (char *)ar->name,
-			  (char *)ar->source, ar->linedefined,
-			  currentline,ar->what);
-	  }
-	  else { /* ar->event == "return" */
-		  lprofP_callhookOUT(S);
-	  }
+        /* entering a function */
+		lprofP_callhookIN(S, (char *)ar->name,
+		    (char *)ar->source, ar->linedefined,
+			currentline,ar->what);
+    }
+	else { /* ar->event == "return" */
+	    lprofP_callhookOUT(S);
+	}
 
 }
 
@@ -135,7 +133,7 @@ static int profiler_init(lua_State *L) {
 	lua_pushlightuserdata(L, &profstate_id);
 	lua_gettable(L, LUA_REGISTRYINDEX);
 	if(!lua_isnil(L, -1)) {
-	profiler_stop(L);
+	    profiler_stop(L);
 	}
 	lua_pop(L, 1);
 
@@ -197,8 +195,7 @@ static int profiler_stop(lua_State *L) {
 	{
 		S = (lprofP_STATE*)lua_touserdata(L, -1);
 		/* leave all functions under execution */
-		while (lprofP_callhookOUT(S))
-			;
+		while (lprofP_callhookOUT(S));
 		lprofP_close_core_profiler(S);
 		lua_pushlightuserdata(L, &profstate_id);
 		lua_pushnil(L);
@@ -213,13 +210,15 @@ static int profiler_stop(lua_State *L) {
   return 1;
 }
 
+/*
 static const luaL_Reg prof_funcs[] = {
-  { "profiler_pause", profiler_pause },
-  { "profiler_resume", profiler_resume },
-  { "profiler_start", profiler_init },
-  { "profiler_stop", profiler_stop },
-  { NULL, NULL }
+{ "profiler_pause", profiler_pause },
+{ "profiler_resume", profiler_resume },
+{ "profiler_start", profiler_init },
+{ "profiler_stop", profiler_stop },
+{ NULL, NULL }
 };
+*/
 
 /*
 int luaopen_profiler(lua_State *L) {
@@ -240,24 +239,25 @@ int luaopen_profiler(lua_State *L) {
 }
 */
 
+/* new change */
 int profiler_open(lua_State *L)
 {
 	is_pause = 0;
 
-	lua_register(L, "profiler_start", profiler_init);
-	lua_register(L, "profiler_pause", profiler_pause);
-	lua_register(L, "profiler_resume", profiler_resume);
-	lua_register(L, "profiler_stop", profiler_stop);
-	// 增加一个判断是否暂停的函数 2016-08-10 lennon.c
-	lua_register(L, "is_profiler_pause", is_profiler_pause);
+	lua_register(L, "start", profiler_init);
+	lua_register(L, "pause", profiler_pause);
+	lua_register(L, "resume", profiler_resume);
+	lua_register(L, "stop", profiler_stop);
+	// 增加一个判断是否暂停的函数
+	lua_register(L, "ispause", is_profiler_pause);
 
 	return 1;
 }
 
 
-LUA_API void init_profiler(lua_State *L)
+LUA_API int luaopen_profiler(lua_State *L)
 {
-	profiler_open(L);
+	return profiler_open(L);
 }
 
 LUA_API int add_profiler(int x,int y)

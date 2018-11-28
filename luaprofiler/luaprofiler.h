@@ -8,13 +8,12 @@
 luaprofiler.h:
     Must be included by your main module, in order to profile Lua programs
 *****************************************************************************/
-#include "../lua.h"
-#include "../lauxlib.h"
+#include "lua.h"
+#include "lauxlib.h"
 
 /*
-	不需要额外定义DLL_API，直接使用LUA_API即可
-	2016-08-12 lennon.c
+	涓嶉渶瑕侀澶栧畾涔塂LL_API,鐩存帴浣跨敤LUA_API鍗冲彲
 */
-LUA_API void init_profiler(lua_State *L);
+LUA_API int luaopen_profiler(lua_State *L);
 LUA_API int add_profiler(int x,int y);
 

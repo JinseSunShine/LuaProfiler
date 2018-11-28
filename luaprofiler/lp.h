@@ -2,7 +2,7 @@
 #include <time.h>
 
 /*
-	��ƽ̨֧��
+	跨平台支持
 	2016-08-10 lennon.c
 */
 #ifdef _MSC_VER

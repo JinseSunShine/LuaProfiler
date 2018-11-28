@@ -24,6 +24,7 @@ LARGE_INTEGER time_maker_golbal_end;
 
 typedef struct lprofS_sSTACK_RECORD lprofS_STACK_RECORD;
 
+// 调用栈信息
 struct lprofS_sSTACK_RECORD {
 	clock_t time_marker_function_local_time;
 	clock_t time_marker_function_total_time;
@@ -46,7 +47,7 @@ typedef lprofS_STACK_RECORD *lprofS_STACK;
 
 typedef struct lprofP_sSTATE lprofP_STATE;
 
-typedef struct lprofS_TREE_RECORD lprofT_NODE;
+typedef struct lprofS_TREE_RECORD lprofT_NODE;  // 记录节点信息
 
 struct lprofS_TREE_RECORD
 {
@@ -60,7 +61,7 @@ struct lprofS_TREE_RECORD
 
 struct lprofP_sSTATE {
    int stack_level;
-   lprofS_STACK stack_top;
+   lprofS_STACK stack_top;  // 指向栈顶的Stack_Recird
 };
 
 void lprofS_push(lprofS_STACK *p, lprofS_STACK_RECORD r);

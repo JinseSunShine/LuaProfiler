@@ -138,60 +138,61 @@ void lprofM_resume_function(lprofP_STATE* S) {
 /* the local time for the parent function is paused  */
 /* and the local and total time markers are started */
 void lprofM_enter_function(lprofP_STATE* S, char *file_defined, char *fcn_name, long linedefined, long currentline,char* what) {
-  char* prev_name = 0;
-  char* cur_name = 0;
-  char* cur_what = 0;
-  /* the flow has changed to another function: */
-  /* pause the parent's function timer timer   */
-  if (S->stack_top) {
-    lprofM_pause_local_time(S);
-    prev_name = S->stack_top->function_name;
-  } else prev_name = "top level";
-  /* measure new function */
-  //lprofC_start_timer(&(newf.time_marker_function_local_time));
-  //lprofC_start_timer(&(newf.time_marker_function_total_time));
-  //lprofC_start_timer2(&(newf.time_maker_local_time));
-  if (file_defined != NULL)
-  {
-	  newf.file_defined = (char*)malloc(sizeof(char)*(strlen(file_defined) + 1));
-	  sprintf(newf.file_defined, "%s", file_defined);
-  }
-  else{
-	  newf.file_defined = (char*)malloc(sizeof(char)*(strlen("no file_defined") + 1));
-	  sprintf(newf.file_defined, "%s", "no file_defined");
-  }
+    char* prev_name = 0;
+    char* cur_name = 0;
+    char* cur_what = 0;
+    /* the flow has changed to another function: */
+    /* pause the parent's function timer timer   */
+    if (S->stack_top) {
+        lprofM_pause_local_time(S);
+        prev_name = S->stack_top->function_name;
+    } else prev_name = "top level";
+    /* measure new function */
+    //lprofC_start_timer(&(newf.time_marker_function_local_time));
+    //lprofC_start_timer(&(newf.time_marker_function_total_time));
+    //lprofC_start_timer2(&(newf.time_maker_local_time));
+    if (file_defined != NULL)
+    {
+	    newf.file_defined = (char*)malloc(sizeof(char)*(strlen(file_defined) + 1));
+	    sprintf(newf.file_defined, "%s", file_defined);
+    }
+    else{
+	    newf.file_defined = (char*)malloc(sizeof(char)*(strlen("no file_defined") + 1));
+	    sprintf(newf.file_defined, "%s", "no file_defined");
+    }
 	
-  if(fcn_name != NULL) {
-    newf.function_name = fcn_name;
-  } else if(strcmp(file_defined, "=[C]") == 0) {
-    cur_name = (char*)malloc(sizeof(char)*(strlen("called from ")+strlen(prev_name)+1));
-    sprintf(cur_name, "called from %s", prev_name);
-    newf.function_name = cur_name;
-  } else {
-    cur_name = (char*)malloc(sizeof(char)*(strlen(file_defined)+12));
-    sprintf(cur_name, "%s:%li", file_defined, linedefined);
-    newf.function_name = cur_name;
-  }	
-  if (what != NULL)
-  {
-	  cur_what = (char*)malloc(sizeof(char)*(strlen(what) + 1));
-	  memset(cur_what, 0x0, sizeof(char)*(strlen(what) + 1));
-	  sprintf(cur_what, "%s", what);
-  }
-  else{
-	  cur_what = (char*)malloc(sizeof(char)*(strlen("unknow") + 1));
-	  memset(cur_what, 0x0, sizeof(char)*(strlen("unknow") + 1));
-	  sprintf(cur_what, "%s", "unknow");
-  }
+    if(fcn_name != NULL) {
+        newf.function_name = fcn_name;
+    } else if(strcmp(file_defined, "=[C]") == 0) {
+        cur_name = (char*)malloc(sizeof(char)*(strlen("called from ")+strlen(prev_name)+1));
+        sprintf(cur_name, "called from %s", prev_name);
+        newf.function_name = cur_name;
+    } else {
+        cur_name = (char*)malloc(sizeof(char)*(strlen(file_defined)+12));
+        sprintf(cur_name, "%s:%li", file_defined, linedefined);
+        newf.function_name = cur_name;
+    }
+
+    if (what != NULL)
+    {
+	    cur_what = (char*)malloc(sizeof(char)*(strlen(what) + 1));
+	    memset(cur_what, 0x0, sizeof(char)*(strlen(what) + 1));
+	    sprintf(cur_what, "%s", what);
+    }
+    else{
+	    cur_what = (char*)malloc(sizeof(char)*(strlen("unknow") + 1));
+	    memset(cur_what, 0x0, sizeof(char)*(strlen("unknow") + 1));
+	    sprintf(cur_what, "%s", "unknow");
+    }
   
-  newf.what = cur_what;
-  newf.line_defined = linedefined;
-  newf.current_line = currentline;
-  newf.local_time = 0.0;
-  newf.interval_time = 0.0;
-  newf.current_time = lprofC_get_current();
-  newf.stack_level = S->stack_level;
-  lprofS_push(&(S->stack_top), newf);
+    newf.what = cur_what;
+    newf.line_defined = linedefined;
+    newf.current_line = currentline;
+    newf.local_time = 0.0;
+    newf.interval_time = 0.0;
+    newf.current_time = lprofC_get_current();
+    newf.stack_level = S->stack_level;
+    lprofS_push(&(S->stack_top), newf);
 }
 
 /* computes times and remove the top of the stack         */

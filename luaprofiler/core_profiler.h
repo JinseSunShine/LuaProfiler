@@ -21,7 +21,7 @@ Design (using the Lua callhook mechanism) :
 //int lprofP_output(lprofP_STATE* S);
 
 /* computes new stack and new timer */
-void lprofP_callhookIN(lprofP_STATE* S, char *func_name, char *file, int linedefined, int currentline,char* what);
+void lprofP_callhookIN(lprofP_STATE* S, char *func_name, char *file, int linedefined, int currentline,char* what);  // Ìí¼Ó what (S) 'Lua', 'C', 'main', 'tail'
 
 /* pauses all timers to write a log line and computes the new stack */
 /* returns if there is another function in the stack */

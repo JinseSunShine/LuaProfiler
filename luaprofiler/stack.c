@@ -148,7 +148,7 @@ void lprofT_add(lprofS_STACK pChild)
 #else
 	if (time_maker_golbal_begin.tv_usec <= 0 || time_maker_golbal_begin.tv_sec <= 0)
 #endif
-		lprofC_start_timer2(&time_maker_golbal_begin);
+	lprofC_start_timer2(&time_maker_golbal_begin);
 	
 	nTotalCall++;
 	lprofT_NODE* p = lprofT_createNode(1);

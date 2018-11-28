@@ -11,19 +11,19 @@ LuaProfiler原自[KeplerProject](http://www.keplerproject.org/luaprofiler)，原
 
 ####函数说明
 
-int profiler\_open(lua\_State *L)  
+int profiler_open(lua_State *L)  
 Type: C  
 Note: LuaProfiler初始化  
-Param1: L 指针类型，lua\_State指针  
+Param1: L 指针类型，lua_State指针  
 Return: 1,成功  
 
-function profiler\_start(jsonFilePath)  
+function profiler_start(jsonFilePath)  
 Type: Lua  
 Note: 开始分析  
 Param1: jsonFilePath 字符串，生成json文件的绝对路径  
 Return: bool, 是否成功  
 
-function profiler\_stop()  
+function profiler_stop()  
 Type: Lua  
 Note: 结束分析，生成结果JSON文件  
 Param1: 无  
